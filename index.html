@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      transition: 0.3s ease;
+    }
+
+    .container:hover {
+      transform: scale(1.02);
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #e0e0e0;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    input::placeholder {
+      color: #eee;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      background: #ffffff;
+      color: #764ba2;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin: 5px;
+    }
+
+    button:hover {
+      background: #eee;
+    }
+
+    #qrcode {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+    }
+
+    #downloadBtn {
+      display: none;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 14px;
+      text-align: center;
+      color: #fff;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 22px;
+      }
+      button {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>QR Code Generator</h1>
+    <p>Enter the Text or Link you want to convert to QR Code</p>
+    <input type="text" id="text" placeholder="Enter Text or URL" />
+    <button onclick="generateQR()">Generate QR</button>
+    <button id="downloadBtn" onclick="downloadQR()">Download QR</button>
+    <div id="qrcode"></div>
+  </div>
+
+  <footer>Made with ❤, by Saurabh Aglave</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    let qr;
+
+    function generateQR() {
+      const text = document.getElementById('text').value.trim();
+      const qrcodeContainer = document.getElementById('qrcode');
+      const downloadBtn = document.getElementById('downloadBtn');
+
+      qrcodeContainer.innerHTML = "";
+      downloadBtn.style.display = "none";
+
+      if (!text) {
+        alert("Please enter text or URL.");
+        return;
+      }
+
+      qr = new QRCode(qrcodeContainer, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: "#000",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      // Wait for QR to render
+      setTimeout(() => {
+        if (qrcodeContainer.querySelector('img') || qrcodeContainer.querySelector('canvas')) {
+          downloadBtn.style.display = "inline-block";
+        }
+      }, 300);
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrcode canvas');
+      if (canvas) {
+        const url = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "qr_code.png";
+        link.click();
+      }
+    }
+  </script>
+
+</body>
+</html>
